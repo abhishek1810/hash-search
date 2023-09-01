@@ -45,6 +45,7 @@ int binarySearch(FILE *file, const char *target) {
         fseek(file, offset, SEEK_SET); // Move to the middle record
         char line[MAX_LINE_LENGTH];
         fgets(line, MAX_LINE_LENGTH, file); // Read the record
+        printf("%s\n", line);
         
         // printf("%s", line);
         memcpy(hash, line, HASH_SIZE+1);
