@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <time.h>
 #include "blake3.h"
 
 int main() {
-    const size_t num_hashes = 1000;  // 100 Million
+    const size_t num_hashes = 250000000;  // 100 Million
     const size_t data_length = 12;  // 12 bytes
 
     // Allocate memory for hash results
@@ -16,6 +17,9 @@ int main() {
 
     // Seed the random number generator
     srand(42);
+
+    //start time
+    clock_t start_time = clock();
 
     // Generate and hash random data
     for (size_t i = 0; i < num_hashes; i++) {
@@ -31,8 +35,19 @@ int main() {
         // printf("%02x", hash_results[i][j]);
     }
 
+    // Record the end time
+    clock_t end_time = clock();
+    // Calculate the elapsed time in seconds
+    double elapsed_time = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+
+    // Print the results
+    printf("Elapsed time: %lf seconds\n", elapsed_time);
+
+
+    start_time = clock();
+
     // Open the file for writing
-    FILE *file = fopen("hashes.txt", "w");
+    FILE *file = fopen("hashes_1.txt", "w");
     if (file == NULL) {
         perror("Error opening file");
         free(hash_results);  // Free allocated memory before exiting
@@ -57,6 +72,13 @@ int main() {
 
     // Free allocated memory
     free(hash_results);
+
+    // Record the end time
+    end_time = clock();
+    // Calculate the elapsed time in seconds
+    elapsed_time = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+    // Print the results
+    printf("Elapsed time: %lf seconds\n", elapsed_time);
 
     printf("Hashes written to hashes.txt\n");
 

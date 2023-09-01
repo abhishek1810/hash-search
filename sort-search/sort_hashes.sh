@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Define the input file name and output file name
-input_file="hashes.txt"
-output_file="sorted_hashes.txt"
+input_file="hashes_250M.txt"
+output_file="sorted_hashes_250M.txt"
 
 # Generate a random input file with unsorted data (you can replace this with your own data)
 # For example, to create a file with 1000 random integers:
