@@ -6,7 +6,7 @@
 
 int main()
 {
-    const size_t num_hashes = 100; 
+    const size_t num_hashes = 500000000; 
     const size_t data_length = 12;       // 12 bytes
     double total_time = 0;
 
@@ -23,7 +23,7 @@ int main()
 
     // start time
 
-    for (int index = 0; index < 2; index++)
+    for (int index = 0; index < 1; index++)
     {
 
         // Allocate memory for hash results

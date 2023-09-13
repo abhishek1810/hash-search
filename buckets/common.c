@@ -1,7 +1,7 @@
 #include <stdlib.h>
 
-const int HASH_SIZE = 9;
-const int PREFIX_SIZE = 1;
+#define HASH_SIZE 10
+#define PREFIX_SIZE 2
 const int SEARCH_COUNT = 1000;
 const int hashesPerBucket = 256;
 const size_t hashesPerBucketRead = 256 * 256;
