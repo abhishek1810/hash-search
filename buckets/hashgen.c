@@ -202,6 +202,31 @@ int main()
         }
     }
 
+    for (size_t i = 0; i < numBuckets; i++)
+    {
+        if ( bucketFlush[i] < (hashesPerBucketRead / hashesPerBucket) ) {
+            long write_location = i * (hashesPerBucketRead * sizeof(struct hashObject)) + bucketFlush[i] * bytes_to_write;
+            if (fseeko(file, write_location, SEEK_SET) != 0)
+            {
+                perror("Error seeking in file");
+                fclose(file);
+                return 1;
+            }
+            size_t bytesWritten = fwrite(array2D[i], 1, bytes_to_write, file);
+            if (bytesWritten != bytes_to_write)
+            {
+                perror("Error writing to file");
+                printf("fwrite()... %lu %zu %lu %i %zu\n", write_location, i, bytes_to_write, bucketFlush[i], bytesWritten);
+                fclose(file);
+                return 1;
+            }
+            totalFlushes++;
+            bucketFlush[i]++;
+            bucketIndex[i] = 0;
+        }
+    }
+    
+
     printf("finished workload...\n");
 
     printf("Total flushes : %zu\n", totalFlushes);

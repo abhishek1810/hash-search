@@ -1,10 +1,10 @@
 #include <stdlib.h>
 
-#define HASH_SIZE 10
-#define PREFIX_SIZE 2
+#define HASH_SIZE 9
+#define PREFIX_SIZE 1
 const int SEARCH_COUNT = 1000;
-const int hashesPerBucket = 256;
-const size_t hashesPerBucketRead = 256 * 256;
+const int hashesPerBucket = 256 * 1024;
+const size_t hashesPerBucketRead = 256 * 256 * 4;
 
 struct hashObject
 {

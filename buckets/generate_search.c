@@ -52,6 +52,16 @@ int main()
         search_array[index] = (unsigned char *)malloc(HASH_SIZE+1);
         memcpy(&search_array[index][PREFIX_SIZE], hashObj->byteArray, HASH_SIZE - PREFIX_SIZE);
 
+        size_t total = 0;
+        for (int j = PREFIX_SIZE; j < (HASH_SIZE); j++)
+        {
+            total += search_array[index][j];
+        }
+        if (total == 0) {
+            continue;
+        }
+        
+
         for (size_t j = 0; j < PREFIX_SIZE; j++) {
             search_array[index][j] = (random_bucket >> (8 * (PREFIX_SIZE - 1 - j))) & 0xFF;
         }
