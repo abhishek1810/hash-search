@@ -199,6 +199,10 @@ int main()
             totalFlushes++;
             bucketFlush[prefix]++;
             bucketIndex[prefix] = 0;
+
+            if ( (int)(totalFlushes % 1024) == 0 ) {
+                printf("Flushed : %zu\n", totalFlushes);
+            }
         }
     }
 
@@ -223,6 +227,10 @@ int main()
             totalFlushes++;
             bucketFlush[i]++;
             bucketIndex[i] = 0;
+
+            if ( (int)(totalFlushes % 1024) == 0 ) {
+                printf("Flushed : %zu\n", totalFlushes);
+            }
         }
     }
     

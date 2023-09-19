@@ -4,7 +4,7 @@
 #define PREFIX_SIZE 1
 const int SEARCH_COUNT = 1000;
 const int hashesPerBucket = 256 * 1024;
-const size_t hashesPerBucketRead = 256 * 256 * 4;
+const size_t hashesPerBucketRead = 256 * 256 * 32;
 
 struct hashObject
 {
