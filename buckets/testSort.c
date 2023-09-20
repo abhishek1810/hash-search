@@ -71,4 +71,9 @@ int main() {
         printArray(bucket2[i].byteArray, 8);
     }
 
+    fclose(file1);
+    fclose(file2);
+
+    return 0;
+
 }

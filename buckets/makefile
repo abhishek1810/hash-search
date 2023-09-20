@@ -13,4 +13,4 @@ sort: sort.c common.c
 	gcc -o sort sort.c
 
 clean:
-	rm -f hashgen gen_search search sort
+	rm -f hashgen gen_search search sort testsort
