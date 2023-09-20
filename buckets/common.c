@@ -2,9 +2,6 @@
 
 #define HASH_SIZE 9
 #define PREFIX_SIZE 1
-const int SEARCH_COUNT = 1000;
-const int hashesPerBucket = 256 * 1024;
-const size_t hashesPerBucketRead = 256 * 256 * 32;
 
 struct hashObject
 {
@@ -21,3 +18,18 @@ void printArray(unsigned char byteArray[HASH_SIZE], int arraySize)
     }
     printf("\n");
 }
+
+int compareHashObjects(const void *a, const void *b)
+{
+    const struct hashObject *hashObjA = (const struct hashObject *)a;
+    const struct hashObject *hashObjB = (const struct hashObject *)b;
+
+    // Compare the byteArray fields
+    return memcmp(hashObjA->byteArray, hashObjB->byteArray, sizeof(hashObjA->byteArray));
+}
+
+const int SEARCH_COUNT = 1000;
+const int hashesPerBucket = 256 * 1024; 
+const size_t hashesPerBucketRead = 256 * 256 * 32;
+const size_t sortSize = 256; //In MB
+const size_t maxHashesToSort = (sortSize * 1024 * 1024) / sizeof(struct hashObject);

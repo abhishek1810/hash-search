@@ -206,6 +206,8 @@ int main()
         }
     }
 
+    printf("Completed generating hashes\n");
+
     for (size_t i = 0; i < numBuckets; i++)
     {
         if ( bucketFlush[i] < (hashesPerBucketRead / hashesPerBucket) ) {
