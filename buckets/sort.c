@@ -10,13 +10,11 @@ bool DEBUG = false;
 
 int main() {
 
-    size_t numBuckets = (size_t)pow(2, PREFIX_SIZE * 8);
-    printf("Number of bucket : %zu\n", numBuckets);
-
-    const size_t numberOfHashesInBucket = hashesPerBucketRead < maxHashesToSort ? hashesPerBucketRead : maxHashesToSort ;    
-    printf("Number of hashes per bucket to sort : %zu\n", numberOfHashesInBucket);
-
+    size_t numBuckets = (int)pow(2, PREFIX_SIZE * 8);
     const size_t numberOfBucketsToSort = (hashesPerBucketRead / numberOfHashesInBucket) * numBuckets;
+
+    printf("Number of bucket : %zu\n", numBuckets);
+    printf("Number of hashes per bucket to sort : %zu\n", numberOfHashesInBucket);
     printf("Number of bucket to sort : %zu\n", numberOfBucketsToSort);
 
     const size_t bucketSizeInBytes = numberOfHashesInBucket * sizeof(struct hashObject);

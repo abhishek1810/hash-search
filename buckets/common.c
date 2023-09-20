@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <math.h>
 
 #define HASH_SIZE 9
 #define PREFIX_SIZE 1
@@ -33,3 +34,4 @@ const int hashesPerBucket = 256 * 1024;
 const size_t hashesPerBucketRead = 256 * 256 * 32;
 const size_t sortSize = 256; //In MB
 const size_t maxHashesToSort = (sortSize * 1024 * 1024) / sizeof(struct hashObject);
+const size_t numberOfHashesInBucket = hashesPerBucketRead < maxHashesToSort ? hashesPerBucketRead : maxHashesToSort ;    
