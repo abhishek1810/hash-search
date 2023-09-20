@@ -137,7 +137,7 @@ int main()
     long search_items = 0;
 
     printf("starting workload...\n");
-    for (unsigned int i = 0; i < MAX_HASHES; i++)
+    for (size_t i = 0; i < MAX_HASHES; i++)
     // for (unsigned int i = 0; i < 1000; i++)
     {
         if (DEBUG)

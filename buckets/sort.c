@@ -77,6 +77,10 @@ int main() {
             fclose(file);
             return 1;
         }
+
+
+        if ( i % 32 == 0 )
+            printf("Buckets sorted : %zu\n", i);
     }
 
     printf("Ending Sort.... \n");
