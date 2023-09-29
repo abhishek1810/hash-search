@@ -13,6 +13,7 @@ int main() {
     size_t numBuckets = (int)pow(2, PREFIX_SIZE * 8);
     const size_t numberOfBucketsToSort = (hashesPerBucketRead / numberOfHashesInBucket) * numBuckets;
 
+    printf("hashesPerBucketRead : %zu\n", hashesPerBucketRead);
     printf("Number of bucket : %zu\n", numBuckets);
     printf("Number of hashes per bucket to sort : %zu\n", numberOfHashesInBucket);
     printf("Number of bucket to sort : %zu\n", numberOfBucketsToSort);
@@ -30,10 +31,14 @@ int main() {
     }
 
     printf("Starting Sort.... \n");
-    clock_t start_time = clock();
+
+    double reading_time, sorting_time, writing_time;
+    clock_t start_time, end_time;
 
     for (size_t i = 0; i < numberOfBucketsToSort; i++)
     {
+
+        start_time = clock();
         //STEP 1 : Seek to location
         size_t bucket_location = i * bucketSizeInBytes;
         if (fseeko(file, bucket_location, SEEK_SET) != 0)
@@ -55,10 +60,18 @@ int main() {
             return 1;
         }
 
+        end_time = clock();
+        reading_time += (double)(end_time - start_time) / CLOCKS_PER_SEC;
+
+
         //STEP 3 : Sort the bucket
+        start_time = clock();
         qsort(bucket, numberOfHashesInBucket, sizeof(struct hashObject), compareHashObjects);
+        end_time = clock();
+        sorting_time += (double)(end_time - start_time) / CLOCKS_PER_SEC;
 
         //STEP 4 : Seek to the start of the bucket
+        start_time = clock();
         if (fseeko(file, bucket_location, SEEK_SET) != 0)
         {
             perror("Error seeking in file");
@@ -78,16 +91,18 @@ int main() {
             return 1;
         }
 
+        end_time = clock();
+        writing_time += (double)(end_time - start_time) / CLOCKS_PER_SEC;
 
         if ( i % 32 == 0 )
             printf("Buckets sorted : %zu\n", i);
     }
 
     printf("Ending Sort.... \n");
-    clock_t end_time = clock();
 
-    double elapsed_time = (double)(end_time - start_time) / CLOCKS_PER_SEC;
-    printf("Elapsed time: %lf seconds \n", elapsed_time);
+    printf("Reading time: %lf seconds \n", reading_time);
+    printf("Sorting time: %lf seconds \n", sorting_time);
+    printf("Writing time: %lf seconds \n", writing_time);
 
     fclose(file);
     free(bucket);

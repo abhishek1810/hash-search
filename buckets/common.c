@@ -31,7 +31,7 @@ int compareHashObjects(const void *a, const void *b)
 
 const int SEARCH_COUNT = 1000;
 const int hashesPerBucket = 256 * 1024; 
-const size_t hashesPerBucketRead = 256 * 256 * 32;
+const size_t hashesPerBucketRead = 256 * 256 * 64;
 const size_t sortSize = 256; //In MB
 const size_t maxHashesToSort = (sortSize * 1024 * 1024) / sizeof(struct hashObject);
 const size_t numberOfHashesInBucket = hashesPerBucketRead < maxHashesToSort ? hashesPerBucketRead : maxHashesToSort ;    
