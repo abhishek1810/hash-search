@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include "common.c"
+#include <math.h>
 
 bool DEBUG = false;
 
@@ -66,6 +67,14 @@ int binarySearch(struct hashObject *array, size_t left, size_t right, const char
 
     // Element not found
     return -1;
+}
+
+// Function to compare two doubles for qsort
+int cmpfunc(const void* a, const void* b) {
+    double diff = (*(double*)a - *(double*)b);
+    if (diff < 0) return -1;
+    if (diff > 0) return 1;
+    return 0;
 }
 
 int main() {
@@ -178,23 +187,26 @@ int main() {
     }
     free(array);
 
+    qsort(times, SEARCH_COUNT, sizeof(double), cmpfunc);
 
-    double max, min, mean = 0;
-    max = times[0];
-    min = times[0];
+    double mean = 0, stdDev = 0;
     for (size_t i = 0; i < SEARCH_COUNT; i++)
     {
-        if ( times[i] > max ) {
-            max = times[i];
-        }
-        if ( times[i] < min ) {
-            min = times[i];
-        }
         mean += times[i];
     }
     mean /= SEARCH_COUNT;
-    
-    printf("Min: %lf seconds, Max: %lf seconds, Mean: %lf seconds\n", min, max, mean);
+
+    for (size_t i = 0; i < SEARCH_COUNT; i++)
+    {
+        stdDev += (times[i] - mean) * (times[i] - mean);
+    }
+    stdDev = sqrt(stdDev / SEARCH_COUNT);
+
+    printf("Min: %lf seconds\n", times[0]);
+    printf("Max: %lf seconds\n", times[SEARCH_COUNT-1]);
+    printf("Mean: %lf seconds\n", mean);
+    printf("Medium: %lf seconds\n", times[(SEARCH_COUNT/2)-1]);
+    printf("Std Dev: %lf seconds\n", stdDev);
 
     return 0;
 }

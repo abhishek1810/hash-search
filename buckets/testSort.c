@@ -21,7 +21,7 @@ int main() {
 
     const size_t bucketSizeInBytes = numberOfHashesInBucket * sizeof(struct hashObject);
     struct hashObject *bucket1 = (struct hashObject *) malloc( bucketSizeInBytes );
-    struct hashObject *bucket2 = (struct hashObject *) malloc( bucketSizeInBytes );
+    // struct hashObject *bucket2 = (struct hashObject *) malloc( bucketSizeInBytes );
 
     printf("fopen()...\n");
 
@@ -32,30 +32,30 @@ int main() {
         return 1;
     }
 
-    FILE *file2 = fopen("plot1.memo", "rb"); // Open for appending
-    if (file2 == NULL)
-    {
-        perror("Error opening file2");
-        return 1;
-    }
+    // FILE *file2 = fopen("plot1.memo", "rb"); // Open for appending
+    // if (file2 == NULL)
+    // {
+    //     perror("Error opening file2");
+    //     return 1;
+    // }
 
     size_t bytesRead = fread(bucket1, 1, bucketSizeInBytes, file1);
     if (bytesRead != numberOfHashesInBucket * sizeof(struct hashObject))
     {
         perror("Error reading file");
         fclose(file1);
-        fclose(file2);
+        // fclose(file2);
         return 1;
     }
 
-    bytesRead = fread(bucket2, 1, bucketSizeInBytes, file2);
-    if (bytesRead != numberOfHashesInBucket * sizeof(struct hashObject))
-    {
-        perror("Error reading file");
-        fclose(file1);
-        fclose(file2);
-        return 1;
-    }
+    // bytesRead = fread(bucket2, 1, bucketSizeInBytes, file2);
+    // if (bytesRead != numberOfHashesInBucket * sizeof(struct hashObject))
+    // {
+    //     perror("Error reading file");
+    //     fclose(file1);
+    //     fclose(file2);
+    //     return 1;
+    // }
 
     printf("Sorted\n");
 
@@ -64,15 +64,15 @@ int main() {
         printArray(bucket1[i].byteArray, 8);
     }
     
-    printf("Unsorted\n");
+    // printf("Unsorted\n");
 
-    for (size_t i = 0; i < 100; i++)
-    {
-        printArray(bucket2[i].byteArray, 8);
-    }
+    // for (size_t i = 0; i < 100; i++)
+    // {
+    //     printArray(bucket2[i].byteArray, 8);
+    // }
 
     fclose(file1);
-    fclose(file2);
+    // fclose(file2);
 
     return 0;
 
