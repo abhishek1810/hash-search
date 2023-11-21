@@ -11,7 +11,8 @@
 #include "blake3.h"
 #define HASH_SIZE 8
 #define MAX_CHILDREN 256
-#define BLOCK_SIZE 524288
+
+const int BLOCK_SIZE =131072;
 
 // const int HASH_SIZE = 8;
 //const int COUNT = 67108864;   //1gb file
@@ -36,11 +37,6 @@ struct leaf
     int hash_block_index;
 };
 
-struct child2
-{
-    struct leaf* children[MAX_CHILDREN];
-};
-
 struct child1
 {
     struct leaf* children[MAX_CHILDREN];
@@ -51,7 +47,7 @@ struct root
     struct child1* children[MAX_CHILDREN];
 };
 
-// struct hashObject *hashresults;
+struct hashObject *hashflushblock;
 struct root *hashtree;
 
 
@@ -133,11 +129,12 @@ int main()
 
     gettimeofday(&start_time,NULL);
     printf("Generating Hashes\n");
+    hashflushblock = ( struct hashObject *)malloc(BLOCK_SIZE*4*sizeof( struct hashObject));  
 
-    char c=getchar();
-
-
+    //char c=getchar();
+    
     //Generating Hashes
+
     size_t block_number=0;
     for (int k=0; k < COUNT; k++)
     {
@@ -156,18 +153,21 @@ int main()
         blake3_hasher_finalize(&hasher,byteArray, HASH_SIZE);
         if (k%100000==0)
         {
-            printf("Hashes generated %d",k);
+            printf("Hashes generated %d\n",k);
         }
         unsigned char bit1 = byteArray[0];
         unsigned char bit2 = byteArray[1];
-        // unsigned char bit3 = byteArray[2];
+        // // unsigned char bit3 = byteArray[2];
         int c=hashtree->children[bit1]->children[bit2]->hash_block_index;
         //hashtree->children[bit1]->children[bit2]->children[bit3]->hash_block[c].byteArray=byteArray;
         memcpy(hashtree->children[bit1]->children[bit2]->hash_block[c].byteArray,byteArray,sizeof(struct hashObject));
         
         hashtree->children[bit1]->children[bit2]->hash_block_index+=1;
-        if (c==BLOCK_SIZE-1);
+        if (c==BLOCK_SIZE-1)
         {
+            // printf("Block Written = %c %c",bit1,bit2);
+            printf("Block Size: %d\n",BLOCK_SIZE);
+            printf( "Writing to file - bit1 - %d, bit2 - %d, count - %d\n", bit1, bit2, c );
             size_t bytesWritten=fwrite(&hashtree->children[bit1]->children[bit2]->hash_block[0],1,(BLOCK_SIZE*sizeof(struct hashObject)),file);
             if (bytesWritten != (BLOCK_SIZE*sizeof(struct hashObject)))
             {
@@ -191,28 +191,28 @@ int main()
 
     }
 
-    for (int i=0;i<256;i++)
-    {
-        for (int j =0;j<256;j++)
-        {
-            if (hashtree->children[i]->children[j]->hash_block_index!=0)
-            {
-                size_t bytesWritten=fwrite(&hashtree->children[i]->children[j]->hash_block[0],1,(BLOCK_SIZE*sizeof(struct hashObject)),file);
-                if (bytesWritten != (BLOCK_SIZE*sizeof(struct hashObject)))
-                {
-                    perror("Error writing to file when dumping\n");
-                    fclose(file);
-                    return 1;
-                }
-                free(hashtree->children[i]->children[j]->hash_block);
-                hashtree->children[i]->children[j]->hash_block_index=0;
-                hashtree->children[i]->children[j]->block_index=malloc((hashtree->children[i]->children[j]->size_of_block_index+1)*(sizeof(int)));
-                hashtree->children[i]->children[j]->block_index[(hashtree->children[i]->children[j]->size_of_block_index)-1]=block_number;
-                hashtree->children[i]->children[j]->size_of_block_index+=1;
-                block_number+=1;
-            }
-        }
-    }
+    // for (int i=0;i<256;i++)
+    // {
+    //     for (int j =0;j<256;j++)
+    //     {
+    //         if (hashtree->children[i]->children[j]->hash_block_index!=0)
+    //         {
+    //             size_t bytesWritten=fwrite(&hashtree->children[i]->children[j]->hash_block[0],1,(BLOCK_SIZE*sizeof(struct hashObject)),file);
+    //             if (bytesWritten != (BLOCK_SIZE*sizeof(struct hashObject)))
+    //             {
+    //                 perror("Error writing to file when dumping\n");
+    //                 fclose(file);
+    //                 return 1;
+    //             }
+    //             free(hashtree->children[i]->children[j]->hash_block);
+    //             hashtree->children[i]->children[j]->hash_block_index=0;
+    //             hashtree->children[i]->children[j]->block_index=malloc((hashtree->children[i]->children[j]->size_of_block_index+1)*(sizeof(int)));
+    //             hashtree->children[i]->children[j]->block_index[(hashtree->children[i]->children[j]->size_of_block_index)-1]=block_number;
+    //             hashtree->children[i]->children[j]->size_of_block_index+=1;
+    //             block_number+=1;
+    //         }
+    //     }
+    // }
 
     gettimeofday(&end_time, NULL);
 
@@ -314,6 +314,7 @@ int main()
     // timersub(&end_time, &start_time, &time_result);
     // printf("Elapsed time: %ld.%06ld\n", (long int) time_result.tv_sec, (long int) time_result.tv_usec);
     free(hashtree);
+    free(hashflushblock);
 
     return 0;
 }
