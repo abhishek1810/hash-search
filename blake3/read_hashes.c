@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+#include <time.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <sys/time.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include "blake3.h"
+#define HASH_SIZE 8
+long block_size=4;
+struct hashObject
+{
+    char byteArray[HASH_SIZE];
+    long int nonce;
+};
+
+
+void printArray(unsigned char byteArray[HASH_SIZE],long int nonce, int arraySize)
+{
+    printf("printArray(): ");
+    for (size_t i = 0; i < arraySize; i++)
+    {
+        printf("%02x ", byteArray[i]); // Print each byte in hexadecimal format
+    }
+    printf("\n");
+}
+struct hashObject *hashresults;
+
+int main()
+{
+    struct stat statbuf;
+    int fd = open("hashetree_1.bin", O_RDONLY);
+    FILE *hash_file=fopen("hashetree_1.bin","r");
+    if (fstat(fd, &statbuf) == -1) 
+    {
+        perror("fstat");
+        return 1;
+    }
+    close(fd);
+    long file_size = statbuf.st_size;
+    hashresults=( struct hashObject *)malloc(block_size*sizeof( struct hashObject)); 
+    fread(hashresults,(block_size * sizeof(struct hashObject)),1,hash_file);
+
+   // for (int i=0;i<)
+
+    return 0;
+}

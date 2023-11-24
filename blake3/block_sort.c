@@ -39,9 +39,9 @@ int main()
 
 
     // These are values for a 10 gb file with 4 mb blocks
-    int block_size = 4194304;
+    int block_size = 1048576;
     int arraySize = 65536;
-    int targetSum = 2560;
+    int targetSum = 10240;
     int lowerBound = 0;
     int upperBound = 1;
 
@@ -237,7 +237,7 @@ int main()
     // printf("%s\n",buffer);
 
     // fclose(fileReader);
-
+    int count=0;
 
     //Sorting algo I thought
     printf("Starting sorting\n");
@@ -297,16 +297,19 @@ int main()
         fseek(hash_file,(offset_to_be_moved_to*block_size),SEEK_SET);
         fwrite(buffer,(block_size),1,hash_file);
         memcpy(buffer,temporary,block_size);
+        count++;
     }
 
+
+    fclose(hash_file);
     gettimeofday(&end_time, NULL);
     
-
+    printf("No. of swaps: %d\n",count);
     timersub(&end_time, &start_time, &time_result);
     printf("Elapsed time: %ld.%06ld\n", (long int) time_result.tv_sec,(long int) time_result.tv_usec);
     printf("No errors?\n");
 
-    fclose(hash_file);
+    
 
     
 

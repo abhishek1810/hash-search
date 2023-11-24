@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#define FILE_SIZE_GB 32
+#define FILE_SIZE_GB 10
 #define BUFFER_SIZE_MB 1
 #define BUFFER_SIZE (BUFFER_SIZE_MB * 1024 * 1024)  // Buffer size in bytes
 
@@ -13,7 +13,7 @@ int main() {
     size_t file_size = FILE_SIZE_GB * 1024ULL * 1024 * 1024;  // File size in bytes
 
     // Open file for writing in binary mode
-    file = fopen("random_data.bin", "wb");
+    file = fopen("random_data2.bin", "wb");
     if (file == NULL) {
         perror("Error opening file");
         return 1;
@@ -51,7 +51,7 @@ int main() {
     fclose(file);
     free(buffer);
 
-    printf("File created successfully: random_data.bin\n");
+    printf("File created successfully: random_data2.bin\n");
 
     return 0;
 }
