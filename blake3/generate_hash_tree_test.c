@@ -12,11 +12,11 @@
 #define HASH_SIZE 8
 #define MAX_CHILDREN 256
 
-const int BLOCK_SIZE =4;
+const int BLOCK_SIZE =32768;
 
 // const int HASH_SIZE = 8;
 //const int COUNT = 67108864;   //1gb file
-const int COUNT = 1000;
+const long COUNT = 67108864;
 //const int COUNT = 268435456;
 const int nonce_size=8;
 
@@ -150,7 +150,7 @@ int main()
         if(c==BLOCK_SIZE)
         {
 
-            printf( "Writing to file - bit1 - %d, bit2 - %d, count - %d\n", bit1, bit2, c );
+            //printf( "Writing to file - bit1 - %d, bit2 - %d, count - %d\n", bit1, bit2, c );
             size_t bytesWritten=fwrite(&hashtree->children[bit1]->children[bit2]->hash_block[0],1,(BLOCK_SIZE*sizeof(struct hashObject)),file);
             if (bytesWritten != (BLOCK_SIZE*sizeof(struct hashObject)))
             {
@@ -194,7 +194,7 @@ int main()
         {
             if (hashtree->children[i]->children[j]->hash_block_index!=0)
             {
-                printf( "Writing to file - bit1 - %d, bit2 - %d, count - %ld\n", i, j, block_offset );
+                //printf( "Writing to file - bit1 - %d, bit2 - %d, count - %ld\n", i, j, block_offset );
                 size_t bytesWritten=fwrite(&hashtree->children[i]->children[j]->hash_block[0],1,(BLOCK_SIZE*sizeof(struct hashObject)),file);
                 if (bytesWritten != (BLOCK_SIZE*sizeof(struct hashObject)))
                 {
@@ -223,6 +223,7 @@ int main()
         }
     }
 
+    //fclose(file);
     gettimeofday(&end_time, NULL);
 
     timersub(&end_time, &start_time, &time_result);
@@ -278,7 +279,7 @@ int main()
         sum+=array[i];
     }
 
-
+    fseek(file,0,SEEK_SET);
     int count=0;
     long block_size=BLOCK_SIZE;
     int targetSum=block_offset-1;
@@ -287,12 +288,12 @@ int main()
     // struct timeval start_time, end_time, time_result;
     // gettimeofday(&start_time, NULL);
     int swap_count=targetSum;
-    FILE *hash_file=fopen("random_data.bin","r+");
+    //FILE *hash_file=fopen("random_data.bin","r+");
     char buffer[block_size];
-    fread(buffer,block_size,1,hash_file);
+    fread(buffer,block_size,1,file);
     // fclose(hash_file);
     // FILE *hash_file=fopen("random_data.bin","r+");
-    fseek(hash_file,0,SEEK_SET);
+    fseek(file,0,SEEK_SET);
     for (int i=0;i<swap_count;i++)
     {
         if (i%100000==0)
@@ -302,7 +303,7 @@ int main()
             timersub(&end_time, &start_time, &time_result);
             printf("Elapsed time: %ld.%06ld\n", (long int) time_result.tv_sec,(long int) time_result.tv_usec);
         }
-        long current_offset=ftell(hash_file)/block_size;
+        long current_offset=ftell(file)/block_size;
         int offset_start_index;
         int movement_from_offset_start_index;
         short flag=0;
@@ -335,18 +336,18 @@ int main()
 
         int offset_to_be_moved_to=offset_start[offset_start_index]+movement_from_offset_start_index;
         char temporary[block_size];
-        if(fseek(hash_file,(offset_to_be_moved_to*block_size),SEEK_SET)!=0)
+        if(fseek(file,(offset_to_be_moved_to*block_size),SEEK_SET)!=0)
             printf("Error 1");
-        fread(temporary,block_size,1,hash_file);
-        if(fseek(hash_file,(offset_to_be_moved_to*block_size),SEEK_SET)!=0)
+        fread(temporary,block_size,1,file);
+        if(fseek(file,(offset_to_be_moved_to*block_size),SEEK_SET)!=0)
             printf("Error 2");
-        fwrite(buffer,(block_size),1,hash_file);
+        fwrite(buffer,(block_size),1,file);
         memcpy(buffer,temporary,block_size);
         count++;
     }
 
 
-    fclose(hash_file);
+    fclose(file);
     gettimeofday(&end_time, NULL);
     
     printf("No. of swaps: %d\n",count);
