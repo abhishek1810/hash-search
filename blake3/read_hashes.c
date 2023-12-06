@@ -11,7 +11,7 @@
 #include <fcntl.h>
 #include "blake3.h"
 #define HASH_SIZE 8
-long block_size=4;
+long block_size=20;
 struct hashObject
 {
     char byteArray[HASH_SIZE];
@@ -26,7 +26,7 @@ void printArray(unsigned char byteArray[HASH_SIZE],long int nonce, int arraySize
     {
         printf("%02x ", byteArray[i]); // Print each byte in hexadecimal format
     }
-    printf("\n");
+    printf("Nonce : %ld\n",nonce);
 }
 struct hashObject *hashresults;
 
@@ -44,6 +44,10 @@ int main()
     long file_size = statbuf.st_size;
     hashresults=( struct hashObject *)malloc(block_size*sizeof( struct hashObject)); 
     fread(hashresults,(block_size * sizeof(struct hashObject)),1,hash_file);
+    for (int i=0;i<block_size;i++)
+    {
+        printArray(hashresults[i].byteArray,hashresults[i].nonce,8);
+    }
 
    // for (int i=0;i<)
 

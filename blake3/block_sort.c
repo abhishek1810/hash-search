@@ -39,9 +39,9 @@ int main()
 
 
     // These are values for a 10 gb file with 4 mb blocks
-    int block_size = 1048576;
+    long block_size = 262144;
     int arraySize = 65536;
-    int targetSum = 10240;
+    int targetSum = 40960;
     int lowerBound = 0;
     int upperBound = 1;
 
@@ -252,7 +252,7 @@ int main()
     fseek(hash_file,0,SEEK_SET);
     for (int i=0;i<swap_count;i++)
     {
-        if (i%100000==0)
+        if (i%10000==0)
         {  
             printf("%d\n",i);
             gettimeofday(&end_time, NULL);
@@ -290,11 +290,13 @@ int main()
             }
         }
 
-        int offset_to_be_moved_to=offset_start[offset_start_index]+movement_from_offset_start_index;
+        long offset_to_be_moved_to=offset_start[offset_start_index]+movement_from_offset_start_index;
         char temporary[block_size];
-        fseek(hash_file,(offset_to_be_moved_to*block_size),SEEK_SET);
+        if(fseek(hash_file,(offset_to_be_moved_to*block_size),SEEK_SET)!=0)
+            printf("Error 2\n");
         fread(temporary,block_size,1,hash_file);
-        fseek(hash_file,(offset_to_be_moved_to*block_size),SEEK_SET);
+        if(fseek(hash_file,(offset_to_be_moved_to*block_size),SEEK_SET) !=0)
+            printf("Error 3\n");
         fwrite(buffer,(block_size),1,hash_file);
         memcpy(buffer,temporary,block_size);
         count++;
