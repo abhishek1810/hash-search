@@ -11,7 +11,7 @@
 #include <fcntl.h>
 #include "blake3.h"
 #define HASH_SIZE 8
-long block_size=20;
+long block_size=150;
 struct hashObject
 {
     char byteArray[HASH_SIZE];
@@ -34,13 +34,13 @@ int main()
 {
     struct stat statbuf;
     int fd = open("hashetree_1.bin", O_RDONLY);
-    FILE *hash_file=fopen("hashetree_1.bin","r");
+    FILE *hash_file=fopen("../hashes_6.bin","r");
     if (fstat(fd, &statbuf) == -1) 
     {
         perror("fstat");
         return 1;
     }
-    close(fd);
+    
     long file_size = statbuf.st_size;
     hashresults=( struct hashObject *)malloc(block_size*sizeof( struct hashObject)); 
     fread(hashresults,(block_size * sizeof(struct hashObject)),1,hash_file);
@@ -50,6 +50,7 @@ int main()
     }
 
    // for (int i=0;i<)
-
+    close(fd);
+    fclose(hash_file);
     return 0;
 }

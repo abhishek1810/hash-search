@@ -12,12 +12,12 @@
 
 
 // const int HASH_SIZE = 8;
-const int COUNT = 67108864;   //1gb file
+const int COUNT = 671088640;   //1gb file
 //const int COUNT = 268435456;
 const int nonce_size=8;
 //const int numOfBuckets=10;
 const int bucket_size=524288;
-const int num_threads=16;
+const int num_threads=32;
 
 struct hashObject
 {
@@ -144,8 +144,7 @@ int main()
         return 1;
     }
 
-    for (int k=0;k<10;k++)
-    {
+    
         for (size_t i=0;i<COUNT;i+=bucket_size)
         {
             size_t bytesWritten=fwrite(&hashresults[i],1,(bucket_size*sizeof(struct hashObject)),file);
@@ -160,8 +159,8 @@ int main()
             }
             // total_bytesWritten+=bytesWritten;
         }
-        printf("%d\n",k);
-    }
+        //printf("%d\n",k);
+    
 
     gettimeofday(&end_time, NULL);
 

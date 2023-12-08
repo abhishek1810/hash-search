@@ -132,8 +132,11 @@ int main()
     printf("Generating Hashes\n");
 
     long block_offset=0;
-    for (int i=0;i<COUNT;i++)
+    long Num_of_writes=65536 * 2;
+    long count=0;
+    while(block_offset<Num_of_writes)
     {
+        
         char random_data[8];
         for (size_t j = 0; j < HASH_SIZE; j++)
         {
@@ -154,7 +157,7 @@ int main()
         int c=(hashtree->children[bit1]->children[bit2]->hash_block_index)+1;
         //hashtree->children[bit1]->children[bit2]->children[bit3]->hash_block[c].byteArray=byteArray;
         memcpy(hashtree->children[bit1]->children[bit2]->hash_block[c-1].byteArray,byteArray,sizeof(8));
-        hashtree->children[bit1]->children[bit2]->hash_block[c-1].nonce= (long int)(i);
+        hashtree->children[bit1]->children[bit2]->hash_block[c-1].nonce= (long int)(count);
 
         hashtree->children[bit1]->children[bit2]->hash_block_index++;
 
@@ -195,42 +198,55 @@ int main()
             block_offset++;
 
         }
-
+        count++;
+        if(count%10000000==0)
+        {
+            printf("%ld\n",count);
+        }
 
     }
+    printf("No. of Hashes: %ld\n",count);
 
-    for (int i=0;i<MAX_CHILDREN;i++)
-    {
-        for(int j=0;j<MAX_CHILDREN;j++)
-        {
-            if (hashtree->children[i]->children[j]->hash_block_index!=0)
-            {
-                printf( "Writing to file - bit1 - %d, bit2 - %d, count - %ld\n", i, j, block_offset );
-                size_t bytesWritten=fwrite(&hashtree->children[i]->children[j]->hash_block[0],1,(BLOCK_SIZE*sizeof(struct hashObject)),file);
-                if (bytesWritten != (BLOCK_SIZE*sizeof(struct hashObject)))
-                {
-                    perror("Error writing to file when dumping\n");
-                    fclose(file);
-                    return 1;
-                }
-                free(hashtree->children[i]->children[j]->hash_block);
-                hashtree->children[i]->children[j]->hash_block_index=0;
+    // for (int i=0;i<MAX_CHILDREN;i++)
+    // {
+    //     for(int j=0;j<MAX_CHILDREN;j++)
+    //     {
+    //         if (hashtree->children[i]->children[j]->hash_block_index!=0)
+    //         {
+    //             printf( "Writing to file - bit1 - %d, bit2 - %d, count - %ld\n", i, j, block_offset );
+    //             size_t bytesWritten=fwrite(&hashtree->children[i]->children[j]->hash_block[0],1,(BLOCK_SIZE*sizeof(struct hashObject)),file);
+    //             if (bytesWritten != (BLOCK_SIZE*sizeof(struct hashObject)))
+    //             {
+    //                 perror("Error writing to file when dumping\n");
+    //                 fclose(file);
+    //                 return 1;
+    //             }
+    //             free(hashtree->children[i]->children[j]->hash_block);
+    //             hashtree->children[i]->children[j]->hash_block_index=0;
 
-                int newSize=hashtree->children[i]->children[j]->size_of_block_index+1;
-                int *newArray = (int *)malloc(newSize * sizeof(int));
+    //             int newSize=hashtree->children[i]->children[j]->size_of_block_index+1;
+    //             int *newArray = (int *)malloc(newSize * sizeof(int));
 
-                for (int k=0;k<hashtree->children[i]->children[j]->size_of_block_index;k++)
-                {
-                    newArray[k]=hashtree->children[i]->children[j]->block_index[k];
-                }
+    //             for (int k=0;k<hashtree->children[i]->children[j]->size_of_block_index;k++)
+    //             {
+    //                 newArray[k]=hashtree->children[i]->children[j]->block_index[k];
+    //             }
 
-                newArray[newSize-1]=block_offset;
-                free(hashtree->children[i]->children[j]->block_index);
-                hashtree->children[i]->children[j]->size_of_block_index=newSize;
-                hashtree->children[i]->children[j]->block_index=newArray;
-                block_offset++;
-            }
+    //             newArray[newSize-1]=block_offset;
+    //             free(hashtree->children[i]->children[j]->block_index);
+    //             hashtree->children[i]->children[j]->size_of_block_index=newSize;
+    //             hashtree->children[i]->children[j]->block_index=newArray;
+    //             block_offset++;
+    //         }
             
+    //     }
+    // }
+
+    for(int i=0;i<MAX_CHILDREN;i++)
+    {
+        for (int j=0;j<MAX_CHILDREN;j++)
+        {
+            free(hashtree->children[i]->children[j]->hash_block);
         }
     }
 
@@ -328,7 +344,7 @@ int main()
     }
 
     fseek(file,0,SEEK_SET);
-    int count=0;
+    //int count=0;
     // long block_size=BLOCK_SIZE*sizeof(struct hashObject);
     long block_size=BLOCK_SIZE * sizeof(struct hashObject);
     int targetSum=block_offset-1;
